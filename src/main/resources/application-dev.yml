@@ -1,0 +1,5 @@
+
+server:
+  port: 8066
+  servlet:
+    context-path: /movie_comment/v1.0
