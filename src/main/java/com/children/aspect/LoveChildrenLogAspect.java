@@ -2,6 +2,7 @@ package com.children.aspect;
 
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Enumeration;
 import java.util.Map;
 
 /**
@@ -46,12 +48,21 @@ public class LoveChildrenLogAspect {
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
+        String remoteAddr = request.getRemoteAddr();
+        System.out.println(remoteAddr);
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()){
+            String element = headerNames.nextElement();
+            String header = request.getHeader(element);
+            System.out.println(element + "\t" + header);
+        }
+
         String uri = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         Object proceed = pjp.proceed();
         LocalDateTime endDate = LocalDateTime.now(ZoneId.of("+8"));
         String endTime = endDate.format(DateTimeFormatter.ofPattern(FORMAT));
         Long endTimestamp = endDate.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        LOGGER.info("{}\t 线程号:{}\t 开始时间:{}\t 结束时间:{} \t 接口耗时:{}", uri, Thread.currentThread().getId(), startTime, endTime, endTimestamp - startTimestamp);
+        LOGGER.info("{}\tIP:{}\t 线程号:{}\t 开始时间:{}\t 结束时间:{} \t 接口耗时:{}", uri, ip(request), Thread.currentThread().getId(), startTime, endTime, endTimestamp - startTimestamp);
         return proceed;
     }
 
@@ -82,5 +93,24 @@ public class LoveChildrenLogAspect {
 
         }
         return map;
+    }
+
+
+    private String ip(HttpServletRequest request){
+        String ip = request.getHeader("X-Forwarded-For");
+        if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            //多次反向代理后会有多个ip值，第一个ip才是真实ip
+            int index = ip.indexOf(",");
+            if (index != -1) {
+                return ip.substring(0, index);
+            } else {
+                return ip;
+            }
+        }
+        ip = request.getHeader("X-Real-IP");
+        if (StringUtils.isNotEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+            return ip;
+        }
+        return ip;
     }
 }
