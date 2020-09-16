@@ -7,6 +7,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -56,13 +58,15 @@ public class LoveChildrenLogAspect {
             String header = request.getHeader(element);
             System.out.println(element + "\t" + header);
         }
-
+        MethodSignature signature = (MethodSignature)pjp.getSignature();
+        String[] paramNames = signature.getParameterNames();
+        Object[] paramArgs = pjp.getArgs();
         String uri = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
         Object proceed = pjp.proceed();
         LocalDateTime endDate = LocalDateTime.now(ZoneId.of("+8"));
         String endTime = endDate.format(DateTimeFormatter.ofPattern(FORMAT));
         Long endTimestamp = endDate.toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        LOGGER.info("{}\tIP:{}\t 线程号:{}\t 开始时间:{}\t 结束时间:{} \t 接口耗时:{}", uri, ip(request), Thread.currentThread().getId(), startTime, endTime, endTimestamp - startTimestamp);
+        LOGGER.info("{}\tIP:{}\t 线程号:{}\t 参数:{}\t 开始时间:{}\t 结束时间:{} \t 接口耗时:{}", uri, ip(request), Thread.currentThread().getId(), getRequestParams(paramNames, paramArgs), startTime, endTime, endTimestamp - startTimestamp);
         return proceed;
     }
 
@@ -87,6 +91,8 @@ public class LoveChildrenLogAspect {
             if (value instanceof MultipartFile){
                 String originalFilename = ((MultipartFile) value).getOriginalFilename();
                 map.put(name, originalFilename);
+            }else if (value instanceof ServletResponse){
+                map.put(name, "response");
             }else {
                 map.put(name, value);
             }

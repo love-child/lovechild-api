@@ -6,6 +6,9 @@ spring:
     url: jdbc:mysql://cdb-p251jg24.bj.tencentcdb.com:10011/love_baby?serverTimezone=GMT%2B8
     username: root
     password: sunbo_zhaohongrui2019
+  data:
+    mongodb:
+      uri: mongodb://love_childProd:Sunbo2020@122.51.107.12:27017/love-child
 mybatis:
   configuration:
-    map-underscore-to-camel-case: true
+      map-underscore-to-camel-case: true
