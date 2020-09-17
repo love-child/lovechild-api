@@ -22,6 +22,6 @@ public class RobotResponseDaoImpl implements RobotResponseDao {
 
     @Override
     public void addResponseRecord(RobotResponseRecord record) {
-
+        mongoTemplate.insert(record);
     }
 }
