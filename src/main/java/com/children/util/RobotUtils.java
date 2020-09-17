@@ -42,16 +42,17 @@ public class RobotUtils {
      * @return 回复
      */
     public String getRobotResponseMessage(String content) {
+        long l = System.currentTimeMillis();
         String resultStr = null;
         try {
             String url = ROBOT_URL + String.format(PARAM_FORMAT, ROBOT_KEY, ROBOT_APPID, URLEncoder.encode(content, "utf-8"));
             String forObject = restTemplate.getForObject(url, String.class);
             Document document = Document.parse(forObject);
             resultStr = document.getString("content");
-
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        System.out.println("机器人花费时长" + (System.currentTimeMillis() - l));
         Random random = new Random();
         int index = random.nextInt(RESPONSE_LIST.size());
         return resultStr == null ? RESPONSE_LIST.get(index) : resultStr;

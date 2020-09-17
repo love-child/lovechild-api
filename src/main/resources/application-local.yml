@@ -8,7 +8,7 @@ spring:
     password: sunbo_zhaohongrui2019
   data:
     mongodb:
-      uri: mongodb://love_childProd:Sunbo2020@127.0.0.1:27017/love-child
+      uri: mongodb://love_childProd:Sunbo2020@122.51.107.12:27017/love-child
 mybatis:
   configuration:
       map-underscore-to-camel-case: true
