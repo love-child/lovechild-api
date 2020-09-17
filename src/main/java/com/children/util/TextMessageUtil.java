@@ -3,6 +3,7 @@ package com.children.util;
 import com.children.repository.entity.RobotResponseRecord;
 import com.thoughtworks.xstream.XStream;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -13,7 +14,7 @@ public class TextMessageUtil {
     /**
      * 将发送消息封装成对应的xml格式
      */
-    public String messageToxml(RobotResponseRecord record) {
+    public static String messageToxml(RobotResponseRecord record) {
         XStream xstream  = new XStream();
         xstream.alias("xml", record.getClass());
         xstream.processAnnotations(record.getClass());
@@ -25,13 +26,29 @@ public class TextMessageUtil {
      * @param toUserName
      * @param content
      */
-    public String initMessage(String fromUserName, String toUserName, String content) {
+    public static RobotResponseRecord initMessage(String fromUserName, String toUserName, String content) {
         RobotResponseRecord record = new RobotResponseRecord();
         record.setToUserName(fromUserName);
         record.setFromUserName(toUserName);
         record.setContent(content);
-        record.setCreateTime(new Date().getTime());
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        record.setCreateTime(date.getTime());
+        record.setCreateTimeStr(simpleDateFormat.format(date));
         record.setMsgType("text");
-        return messageToxml(record);
+        return record;
+    }
+
+    public static RobotResponseRecord initDefaultMessage(String fromUserName, String toUserName) {
+        RobotResponseRecord record = new RobotResponseRecord();
+        record.setToUserName(fromUserName);
+        record.setFromUserName(toUserName);
+        record.setContent("你在说什么呀 我听不懂");
+        Date date = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        record.setCreateTime(date.getTime());
+        record.setCreateTimeStr(simpleDateFormat.format(date));
+        record.setMsgType("text");
+        return record;
     }
 }

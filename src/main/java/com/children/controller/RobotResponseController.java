@@ -1,8 +1,10 @@
 package com.children.controller;
 
+import com.children.service.RobotResponseService;
 import com.children.util.MessageUtil;
 import com.children.util.SHA1;
 import com.children.util.TextMessageUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,13 @@ import java.util.Map;
 @Controller
 @CrossOrigin
 public class RobotResponseController {
+
+    private final RobotResponseService robotResponseService;
+
+    @Autowired
+    public RobotResponseController(RobotResponseService robotResponseService) {
+        this.robotResponseService = robotResponseService;
+    }
 
     @RequestMapping(value = "/wx/login", method = RequestMethod.GET)
     public void wxLogin(@RequestParam(value = "signature") String signature, @RequestParam(value = "timestamp") String timestamp,
@@ -53,17 +62,14 @@ public class RobotResponseController {
         PrintWriter out = null;
         //将微信请求xml转为map格式，获取所需的参数
         Map<String,String> map = MessageUtil.xmlToMap(request);
-        String toUserName = map.get("ToUserName");
-        String fromUserName = map.get("FromUserName");
-        String msgType = map.get("MsgType");
-        String content = map.get("Content");
 
-        String message = null;
-        //处理文本类型,回复用户输入的内容
-        if("text".equals(msgType)){
-            TextMessageUtil textMessage = new TextMessageUtil();
-            message = textMessage.initMessage(fromUserName, toUserName, content);
-        }
+
+        String message = robotResponseService.getRobotResponse(map);
+
+//        String message = null;
+//        //处理文本类型,回复用户输入的内容
+//        TextMessageUtil textMessage = new TextMessageUtil();
+//        message = textMessage.initMessage(fromUserName, toUserName, content);
         try {
             out = response.getWriter();
             out.write(message);
