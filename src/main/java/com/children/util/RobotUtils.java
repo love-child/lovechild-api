@@ -99,7 +99,7 @@ public class RobotUtils {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<MultiValueMap<String,Object>> httpEntity = new HttpEntity(paramsMap, headers);
         Map<String,Object> map = restTemplate.postForObject(ROBOT_URL, httpEntity, Map.class, params);
-        return map != null && "0".equals(map.get("ret").toString()) && map.get("answer") != null && ((Map<String,Object>)map.get("data")).get("answer") != null ? ((Map<String,Object>)map.get("data")).get("answer").toString() : RESPONSE_LIST.get(index);
+        return map != null && "0".equals(map.get("ret").toString()) && map.get("data") != null && ((Map<String,Object>)map.get("data")).get("answer") != null ? ((Map<String,Object>)map.get("data")).get("answer").toString() : RESPONSE_LIST.get(index);
     }
     private String params(MultiValueMap<String,String> params, String timestamp, String nonceStr, String session, String question) throws UnsupportedEncodingException {
         params.add("app_id", ROBOT_APPID);
