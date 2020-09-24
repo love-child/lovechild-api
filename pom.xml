@@ -106,14 +106,22 @@
 			<artifactId>swagger-bootstrap-ui</artifactId>
 			<version>1.9.6</version>
 		</dependency>
-
+		<!-- ehcache 缓存 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
 			<id>dev</id>
 			<properties>
 				<profiles.active>dev</profiles.active>
-				<profiles.version>1.0.1</profiles.version>
+				<profiles.version>1.0.2</profiles.version>
 			</properties>
 			<activation>
 				<activeByDefault>true</activeByDefault>
@@ -124,7 +132,7 @@
 			<id>prod</id>
 			<properties>
 				<profiles.active>prod</profiles.active>
-				<profiles.version>1.0.1</profiles.version>
+				<profiles.version>1.0.2</profiles.version>
 			</properties>
 		</profile>
 	</profiles>

@@ -36,7 +36,7 @@ public class RobotResponseServiceImpl implements RobotResponseService {
         if (Objects.equals("text", msgType)){
             RobotResponseRecord userResponseRecord = TextMessageUtil.initMessage(toUserName, fromUserName, content);
             robotResponseDao.addResponseRecord(userResponseRecord);
-            String robotResponseMessage = robotUtils.getRobotResponseMessage(content);
+            String robotResponseMessage = robotUtils.getRobotResponseMessage(content, fromUserName);
             RobotResponseRecord robotResponseRecord = TextMessageUtil.initMessage(fromUserName, toUserName, robotResponseMessage);
             robotResponseDao.addResponseRecord(robotResponseRecord);
             return TextMessageUtil.messageToxml(robotResponseRecord);

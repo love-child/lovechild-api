@@ -31,4 +31,14 @@ public class UserController {
                               @ApiParam(value = "user_password", required = true) @RequestParam("user_password") String userPassword){
         return ResponseBean.success(userService.login(userAccount, userPassword));
     }
+
+    @ApiOperation(value = "注册接口", notes = "", response = Void.class, tags = {"user",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "获取成功", response = ResponseBean.class),
+            @ApiResponse(code = 400, message = "Invalid supplied", response = ResponseBean.class)})
+    @RequestMapping(value = "/user/register", method = RequestMethod.POST)
+    public ResponseBean register(@ApiParam(value = "user_account", required = true) @RequestParam("user_account") String userAccount,
+                              @ApiParam(value = "user_password", required = true) @RequestParam("user_password") String userPassword){
+        return ResponseBean.success(userService.register(userAccount, userPassword));
+    }
 }
